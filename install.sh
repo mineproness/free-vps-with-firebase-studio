@@ -6,7 +6,7 @@ apt update
 apt upgrade -y 
 clear
 echo -e ${RED}Installing Xfce4 , xrdp ,firefox..... ${NC}
-apt install xfce4 -y
+apt install xfce4 xrdp -y
 apt install sudo wget curl git  -y
 apt install firefox -y
 clear
