@@ -6,4 +6,4 @@ cd freeroot
 bash root.sh
 ```
 
-## Then Type 'YES'
+Then Type 'YES'
