@@ -27,3 +27,9 @@ When it is installed. You need type 'rdpstart' to start rdp. you get a IP addres
 
 # Importants!
 it is not For Bitcoin Mining so Use Carefully. and It is Stop For Tab Close so Don't Close Tab
+ 
+## How to Start Again
+In Terminal Just Type 
+``` sh
+cd ~/freeroot && bash root.sh
+```
