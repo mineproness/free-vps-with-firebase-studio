@@ -33,3 +33,4 @@ In Terminal Just Type
 ``` sh
 cd ~/freeroot && bash root.sh
 ```
+and then Type 'rdpstart'
