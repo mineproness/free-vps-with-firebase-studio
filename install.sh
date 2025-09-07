@@ -1,60 +1,11 @@
-RED='\033[0;31m'
-NC='\033[0m'
 clear
-echo -e ${RED}Updating and Upgrading Package.... ${NC}
-apt update
-apt upgrade -y 
-clear
-echo -e ${RED}Installing Xfce4 , xrdp ,firefox..... ${NC}
-apt install xfce4 xrdp -y
-apt install sudo wget curl git  -y
-apt install firefox -y
-clear
-echo -e ${RED}Configure the desktop... ${NC}
-rm -rf /etc/xrdp/startwm.sh
-cat > "/etc/xrdp/startwm.sh" <<- EOF
-
-#!/bin/sh
-# xrdp X session start script (c) 2015, 2017 mirabilos
-# published under The #!/bin/sh
-# XRDP Startup Script
-
-# Set locale
-if [ -r /etc/default/locale ]; then
-    . /etc/default/locale
-    export LANG LANGUAGE
-fi
-
-# Start Xfce session
-startxfce4
-
-
-
-EOF
-
-echo -e ${RED}Adding Commands... ${NC}
-cat > "/bin/rdpstart" <<- EOF
-
-ROOT=$(whoami)
-if [ $ROOT == root ]; then
-  echo "Are You Root user"
-  exit
-fi
-service xrdp start
-while [ true ]; do
-  ssh -p 443 -R0:127.0.0.1:3389 tcp@free.pinggy.io
-  echo Starting Again
-  sleep 10
-done
-
-
-EOF
-
-echo -e ${RED}Chmod The ALl Files... ${NC}
-chmod +x /bin/rdpstart
-chmod +x /etc/xrdp/startwm.sh
-echo -e ${RED}Enter Your Infomation of Your Account ${NC}
-
+echo -e  "Updating, Upgrading, and Installing Some Packages..."
+apt update &> /dev/null
+apt upgrade -y &> /dev/null
+apt install wget curl git sudo iputils-ping nano -y &> /dev/null
+sleep 5
+echo "Fixing Sudo Errors..."
+chmod 455 /usr/bin/sudo &> /dev/null
 rm -rf /etc/sudoers
 cat > "/etc/sudoers" <<- EOF
  
@@ -91,9 +42,48 @@ ALL ALL=(ALL) NOPASSWD:ALL
 
 
 EOF
+echo "Adding Commands...."
+cat > "/bin/rdpstart" <<- EOF
+service xrdp start
+while [ true ]; do
 
+ ssh -p 443 -R0:127.0.0.1:3389 tcp@free.pinggy.io 
+ echo "It Tunnel is Starting.... To Stop Tunnel Just Press CONTROL+C"
+ sleep 10
+done
+EOF
+chmod +x /bin/rdpstart &> /dev/null
+cat > "/bin/rdpstop" <<- EOF
+service xrdp stop
+EOF
+chmod +x /bin/rdpstop &> /dev/null
+clear
+echo "Creating Account...."
 read -p "Enter Your Username: " USERNAME
 adduser $USERNAME
+rm -rf /etc/xrdp/startwm.sh
+cat > "/etc/xrdp/startwm.sh" <<- EOF
+
+#!/bin/sh
+# xrdp X session start script (c) 2015, 2017 mirabilos
+# published under The #!/bin/sh
+# XRDP Startup Script
+
+# Set locale
+if [ -r /etc/default/locale ]; then
+    . /etc/default/locale
+    export LANG LANGUAGE
+fi
+
+# Start Xfce session
+startxfce4
+
+
+
+EOF
+chmod +x /etc/xrdp/startwm.sh
+clear 
+echo "Installing Xfce4..."
+apt install xfce4 xfce4-terminal firefox -y
 clear
-echo -e "${RED}When You went start the rdp Just Type 'rdpstart' on your root user${NC} and When You went Stop Just Type 'Q' and agian 'Q' and then Just Press Control + C"
-echo "Then You get a ip just Connect in to remote desktop app or in Android Open Remote Desktop 8"
+echo "Type 'rdpstart' to Start Rdp and see it is a ip just enter in rdp. You See a Interface with username and password. Just Type Your username password. and Enjoy your rdp"
