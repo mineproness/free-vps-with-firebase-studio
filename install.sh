@@ -6,6 +6,7 @@ apt install wget curl git sudo iputils-ping nano -y &> /dev/null
 sleep 5
 echo "Fixing Sudo Errors..."
 chmod 455 /usr/bin/sudo &> /dev/null
+apt install xrdp -y
 rm -rf /etc/sudoers
 cat > "/etc/sudoers" <<- EOF
  
@@ -57,11 +58,11 @@ cat > "/bin/rdpstop" <<- EOF
 service xrdp stop
 EOF
 chmod +x /bin/rdpstop &> /dev/null
-clear
+
 echo "Creating Account...."
 read -p "Enter Your Username: " USERNAME
 adduser $USERNAME
-apt install xrdp -y
+
 rm -rf /etc/xrdp/startwm.sh
 cat > "/etc/xrdp/startwm.sh" <<- EOF
 
@@ -83,8 +84,8 @@ startxfce4
 
 EOF
 chmod +x /etc/xrdp/startwm.sh
-clear 
+ 
 echo "Installing Xfce4..."
 apt install xfce4 xfce4-terminal firefox -y
-clear
+
 echo "Type 'rdpstart' to Start Rdp and see it is a ip just enter in rdp. You See a Interface with username and password. Just Type Your username password. and Enjoy your rdp"
