@@ -61,6 +61,7 @@ clear
 echo "Creating Account...."
 read -p "Enter Your Username: " USERNAME
 adduser $USERNAME
+apt install xrdp -y
 rm -rf /etc/xrdp/startwm.sh
 cat > "/etc/xrdp/startwm.sh" <<- EOF
 
