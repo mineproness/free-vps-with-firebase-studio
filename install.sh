@@ -5,7 +5,8 @@ apt upgrade -y &> /dev/null
 apt install wget curl git sudo iputils-ping nano -y &> /dev/null
 sleep 5
 echo "Fixing Sudo Errors..."
-chmod 455 /usr/bin/sudo &> /dev/null
+chown root:root /usr/bin/sudo
+chmod 4755 /usr/bin/sudo
 apt install xrdp -y
 rm -rf /etc/sudoers
 cat > "/etc/sudoers" <<- EOF
