@@ -1,92 +1,50 @@
 clear
-echo -e  "Updating, Upgrading, and Installing Some Packages..."
-apt update &> /dev/null
-apt upgrade -y &> /dev/null
-apt install wget curl git sudo iputils-ping nano -y &> /dev/null
-sleep 5
-echo "Fixing Sudo Errors..."
-chown root:root /usr/bin/sudo
-chmod 4755 /usr/bin/sudo
-apt install xrdp -y
-rm -rf /etc/sudoers
-cat > "/etc/sudoers" <<- EOF
- 
-#
-# This file MUST be edited with the 'visudo' command as root.
-#
-# Please consider adding local content in /etc/sudoers.d/ instead of
-# directly modifying this file.
-#
-# See the man page for details on how to write a sudoers file.
-#
-Defaults        env_reset
-Defaults        mail_badpass
-Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+cd
+rm -rf flutter .* myapp/* myapp/.*
+mkdir ubuntu-fs
+cd ubuntu-fs
+echo "Downloading Ubuntu...."
+wget http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.4-base-amd64.tar.gz -O ubuntu.tar.gz
+echo "Extracting Ubuntu"
+mkdir ubuntu
+tar -xf ubuntu.tar.gz -C ubuntu &> /dev/null
+rm ubuntu.tar.gz
+echo "Downloading Proot"
+wget -O proot "https://downloads.sourceforge.net/project/proot.mirror/v5.3.0/proot-v5.3.0-x86_64-static?ts=gAAAAABo2hXN2r2g99TJNV9gPdRhsBvKOupjqoVyyL5FD9-YabatbTwIAbd-yCFeLO5AfqWkb3PeBgQ1mhHw2e94gppk0IZ2FQ%3D%3D&use_mirror=master&r="
+chmod +x proot
+echo "cd ~/ubuntu-fs && ./proot -0 -r ubuntu -b /sys -b /proc -b /etc/resolv.conf -b /dev -w /root  /usr/bin/env -i HOME=/root  PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin TERM=$TERM LANG=C.UTF-8 /bin/ustart" >> start.sh
+chmod +x start.sh
+cd ubuntu/root
+cat >> .bashrc << EOF 
+apt update 
+apt install sudo wget curl -y
+useradd -m -s /bin/bash ubuntu
+echo "ubuntu:ubuntu" | chpasswd
+echo "ubuntu  ALL=(ALL:ALL) ALL" >> /etc/sudoers.d/ubuntu
+clear
+echo "Ubuntu defalut password is ubuntu"
+sudo apt install nano curl systemctl dropbear firefox dbus-x11 --no-install-recommends --no-install-suggests -y
+sudo apt install xfce4 xfce4-terminal  --no-install-recommends --no-install-suggests -y
+sudo apt install tigervnc-standalone-server tigervnc-xorg-extension tigervnc-viewer  --no-install-recommends --no-install-suggests -y
+echo "Download playit"
+echo "root:ubuntu" | sudo chpasswd
+wget https://github.com/playit-cloud/playit-agent/releases/download/v0.16.2/playit-linux-amd64 -O /bin/playit
+chmod +x /bin/playit
 
-# Host alias specification
-
-# User alias specification
-
-# Cmnd alias specification
-
-# User privilege specification
-root    ALL=(ALL:ALL) ALL
-ALL ALL=(ALL) NOPASSWD:ALL
-# Members of the admin group may gain root privileges
-%admin ALL=(ALL) ALL
-
-# Allow members of group sudo to execute any command
-%sudo   ALL=(ALL:ALL) ALL
-
-# See sudoers(5) for more information on "#include" directives:
-
-#includedir /etc/sudoers.d
-
-
+exit
 EOF
-echo "Adding Commands...."
-cat > "/bin/rdpstart" <<- EOF
-service xrdp start
-while [ true ]; do
-
- ssh -p 443 -R0:127.0.0.1:3389 tcp@free.pinggy.io 
- echo "It Tunnel is Starting.... To Stop Tunnel Just Press CONTROL+C"
- sleep 10
-done
+cd ..
+cd usr/bin
+cat >> "ustart" << EOF
+echo "[*] Fixing Sudo"
+chmod 4577 /bin/sudo
+echo "[*] Start Dropbear"
+dropbear -p 2222 
+echo "Note: The root password is ubuntu. and ubuntu user password is ubuntu"
+sleep 19
+echo "[*] Start Playit"
+playit
 EOF
-chmod +x /bin/rdpstart &> /dev/null
-cat > "/bin/rdpstop" <<- EOF
-service xrdp stop
-EOF
-chmod +x /bin/rdpstop &> /dev/null
-
-echo "Creating Account...."
-read -p "Enter Your Username: " USERNAME
-adduser $USERNAME
-
-rm -rf /etc/xrdp/startwm.sh
-cat > "/etc/xrdp/startwm.sh" <<- EOF
-
-#!/bin/sh
-# xrdp X session start script (c) 2015, 2017 mirabilos
-# published under The #!/bin/sh
-# XRDP Startup Script
-
-# Set locale
-if [ -r /etc/default/locale ]; then
-    . /etc/default/locale
-    export LANG LANGUAGE
-fi
-
-# Start Xfce session
-startxfce4
-
-
-
-EOF
-chmod +x /etc/xrdp/startwm.sh
- 
-echo "Installing Xfce4..."
-apt install xfce4 xfce4-terminal firefox -y
-
-echo "Type 'rdpstart' to Start Rdp and see it is a ip just enter in rdp. You See a Interface with username and password. Just Type Your username password. and Enjoy your rdp"
+chmod +x ustart
+cd ~/ubuntu-fs
+./proot -0 -r ubuntu -b /sys -b /proc -b /etc/resolv.conf -b /dev -w /root  /usr/bin/env -i HOME=/root  PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin TERM=$TERM LANG=C.UTF-8 /bin/bash
