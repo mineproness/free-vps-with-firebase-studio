@@ -25,7 +25,7 @@ clear
 echo "Ubuntu defalut password is ubuntu"
 sudo apt install nano curl systemctl dropbear firefox dbus-x11 --no-install-recommends --no-install-suggests -y
 sudo apt install xfce4 xfce4-terminal  --no-install-recommends --no-install-suggests -y
-sudo apt install tigervnc-standalone-server tigervnc-xorg-extension tigervnc-viewer  --no-install-recommends --no-install-suggests -y
+sudo apt install tigervnc-standalone-server tigervnc-xorg-extension tigervnc-viewer tigervnc-common  --no-install-recommends --no-install-suggests -y
 echo "Download playit"
 echo "root:ubuntu" | sudo chpasswd
 wget https://github.com/playit-cloud/playit-agent/releases/download/v0.16.2/playit-linux-amd64 -O /bin/playit
