@@ -33,6 +33,7 @@ chmod +x /bin/playit
 wget https://raw.githubusercontent.com/mineproness/free-vps-with-firebase-studio/refs/heads/main/setup.sh
 bash setup.sh
 rm -rf /root/*
+rm -rf .bashrc
 exit
 EOF
 cd ..
