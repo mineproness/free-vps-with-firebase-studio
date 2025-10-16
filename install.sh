@@ -30,7 +30,9 @@ echo "Download playit"
 echo "root:ubuntu" | sudo chpasswd
 wget https://github.com/playit-cloud/playit-agent/releases/download/v0.16.2/playit-linux-amd64 -O /bin/playit
 chmod +x /bin/playit
-
+wget https://raw.githubusercontent.com/mineproness/free-vps-with-firebase-studio/refs/heads/main/setup.sh
+bash setup.sh
+rm -rf /root/*
 exit
 EOF
 cd ..
